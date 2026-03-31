@@ -1,6 +1,6 @@
 # Dotfiles
 
-This repository contains my personal dotfiles, optimized for use on Arch-based Linux distributions with Wayland compositors. The structure is organized for simplicity, so you can easily pick and use configurations for Neovim, Hyprland, terminals, and more.
+This repository contains my personal dotfiles, for Arch-based Linux distributions with Wayland compositors. The structure is organized for simplicity, so you can easily pick and use configurations for Neovim, Hyprland, terminals, and more.
 
 ## Structure
 
