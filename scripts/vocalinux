@@ -1,0 +1,12 @@
+#!/bin/bash
+# Wrapper script for Vocalinux that sets required environment variables
+# and applies the 'input' group for keyboard shortcuts on Wayland
+export GI_TYPELIB_PATH=/usr/lib/girepository-1.0
+
+# Check if user is in input group but current session doesn't have it
+if grep -q "^input:.*\b$(whoami)\b" /etc/group 2>/dev/null && ! groups | grep -q '\binput\b'; then
+    # Use sg to run with input group without requiring logout
+    exec sg input -c "/home/arham/.local/share/vocalinux/venv/bin/vocalinux $*"
+else
+    exec "/home/arham/.local/share/vocalinux/venv/bin/vocalinux" "$@"
+fi

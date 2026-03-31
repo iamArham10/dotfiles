@@ -1,0 +1,165 @@
+[manager]
+ratio          = [1, 4, 3]
+sort_by        = "natural"
+sort_sensitive = false
+sort_reverse   = false
+sort_dir_first = true
+linemode       = "size"
+show_hidden    = false
+show_symlink   = true
+scrolloff      = 5
+
+[preview]
+max_width  = 600
+max_height = 900
+cache_dir  = ""
+image_filter = "triangle"
+image_quality = 75
+sixel_fraction = 15
+ueberzug_scale = 1
+ueberzug_offset = [0, 0, 0, 0]
+
+[opener]
+
+# --- Editors ---
+edit = [
+    { run = 'nvim "$@"', block = true, desc = "Neovim" },
+    { run = 'cursor "$@"', orphan = true, desc = "Cursor" },
+    { run = 'code "$@"', orphan = true, desc = "VS Code" },
+    { run = 'subl "$@"', orphan = true, desc = "Sublime Text" },
+]
+
+# --- Markdown ---
+markdown = [
+    { run = 'typora "$@"', orphan = true, desc = "Typora" },
+    { run = 'nvim "$@"', block = true, desc = "Neovim" },
+    { run = 'cursor "$@"', orphan = true, desc = "Cursor" },
+    { run = 'code "$@"', orphan = true, desc = "VS Code" },
+    { run = 'obsidian "$@"', orphan = true, desc = "Obsidian" },
+]
+
+# --- Folders ---
+folder = [
+    { run = 'cursor "$@"', orphan = true, desc = "Cursor" },
+    { run = 'code "$@"', orphan = true, desc = "VS Code" },
+    { run = 'thunar "$@"', orphan = true, desc = "Thunar (GUI)" },
+    { run = '''$SHELL -c 'cd "$0" && $SHELL' ''', block = true, desc = "Terminal here" },
+]
+
+# --- Default / xdg-open ---
+open = [
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+]
+
+# --- Media players ---
+play = [
+    { run = 'mpv "$@"', orphan = true, desc = "mpv" },
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+]
+
+# --- Images ---
+image = [
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default viewer)" },
+    { run = 'gimp "$@"', orphan = true, desc = "GIMP" },
+    { run = 'google-chrome-stable "$@"', orphan = true, desc = "Chrome" },
+]
+
+# --- PDF / Documents ---
+pdf = [
+    { run = 'zathura "$@"', orphan = true, desc = "Zathura" },
+    { run = 'google-chrome-stable "$@"', orphan = true, desc = "Chrome" },
+    { run = 'microsoft-edge-stable "$@"', orphan = true, desc = "Edge" },
+    { run = 'libreoffice --draw "$@"', orphan = true, desc = "LibreOffice Draw" },
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+]
+
+# --- Office documents ---
+office = [
+    { run = 'libreoffice "$@"', orphan = true, desc = "LibreOffice" },
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+]
+
+# --- Web / HTML ---
+web = [
+    { run = 'google-chrome-stable "$@"', orphan = true, desc = "Chrome" },
+    { run = 'microsoft-edge-stable "$@"', orphan = true, desc = "Edge" },
+    { run = 'nvim "$@"', block = true, desc = "Neovim (source)" },
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+]
+
+# --- Archives ---
+archive = [
+    { run = 'xdg-open "$@"', orphan = true, desc = "Open (default)" },
+    { run = 'thunar "$@"', orphan = true, desc = "Thunar" },
+]
+
+[open]
+rules = [
+    # Folders
+    { name = "*/", use = [ "folder", "open" ] },
+
+    # Markdown (before generic text so Typora shows first)
+    { name = "*.md", use = [ "markdown", "edit", "open" ] },
+
+    # Text/code files
+    { mime = "text/*", use = [ "edit", "open" ] },
+    { mime = "application/json", use = [ "edit", "open" ] },
+    { mime = "*/javascript", use = [ "edit", "open" ] },
+    { mime = "*/typescript", use = [ "edit", "open" ] },
+    { mime = "*/xml", use = [ "edit", "open" ] },
+    { mime = "application/x-yaml", use = [ "edit", "open" ] },
+    { mime = "application/toml", use = [ "edit", "open" ] },
+
+    # HTML
+    { mime = "text/html", use = [ "web", "edit", "open" ] },
+
+    # Media
+    { mime = "video/*", use = [ "play", "open" ] },
+    { mime = "audio/*", use = [ "play", "open" ] },
+
+    # Images
+    { mime = "image/*", use = [ "image", "open" ] },
+
+    # PDF
+    { mime = "application/pdf", use = [ "pdf", "open" ] },
+
+    # Office documents
+    { mime = "application/vnd.openxmlformats*", use = [ "office", "open" ] },
+    { mime = "application/vnd.ms-*", use = [ "office", "open" ] },
+    { mime = "application/vnd.oasis*", use = [ "office", "open" ] },
+    { mime = "application/msword", use = [ "office", "open" ] },
+
+    # Archives
+    { mime = "application/zip", use = [ "archive", "open" ] },
+    { mime = "application/*zip*", use = [ "archive", "open" ] },
+    { mime = "application/x-tar", use = [ "archive", "open" ] },
+    { mime = "application/x-bzip*", use = [ "archive", "open" ] },
+    { mime = "application/x-7z-compressed", use = [ "archive", "open" ] },
+    { mime = "application/x-rar", use = [ "archive", "open" ] },
+    { mime = "application/gzip", use = [ "archive", "open" ] },
+
+    # Fallback
+    { name = "*", use = [ "open", "edit" ] },
+]
+
+[tasks]
+micro_workers    = 10
+macro_workers    = 25
+bizarre_retry    = 5
+image_alloc      = 536870912  # 512MB
+image_bound      = [0, 0]
+suppress_preload = false
+
+[plugin]
+prepend_previewers = []
+prepend_preloaders = []
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id  = "git"
+url = "*/"
+run = "git"

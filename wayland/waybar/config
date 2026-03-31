@@ -1,0 +1,121 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 28,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
+    "spacing": 0,
+    "modules-left": [
+        "sway/workspaces",
+        "sway/mode",
+        "wlr/taskbar"
+    ],
+    "modules-center": [
+        "clock"
+    ],
+    "modules-right": [
+        "network",
+        "bluetooth",
+        "backlight",
+        "pulseaudio",
+        "battery",
+        "custom/notification",
+        "tray"
+    ],
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": false,
+        "format": "{name}"
+    },
+    "sway/mode": {
+        "format": "  {}"
+    },
+    "clock": {
+        "format": "{:%I:%M %p  |  %a %b %d}",
+        "tooltip-format": "<big>{:%B %Y}</big>\n<tt>{calendar}</tt>"
+    },
+    "battery": {
+        "interval": 10,
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "󰂄  {capacity}%",
+        "format-full": "󰁹  Full",
+        "format-icons": [
+            "󰁺", "󰁼", "󰁾", "󰂀", "󰁹"
+        ],
+        "tooltip-format": "{timeTo}\n{power:.1f}W"
+    },
+    "network": {
+        "format-wifi": "{icon}  {essid}",
+        "format-ethernet": "󰈀  Wired",
+        "format-disconnected": "󰤭  Off",
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "tooltip-format-wifi": "{signalStrength}% | {ipaddr}",
+        "tooltip-format-ethernet": "{ipaddr}",
+        "on-click": "wifi-menu"
+    },
+    "bluetooth": {
+        "format": "󰂯",
+        "format-connected": "󰂱  {device_alias}",
+        "format-connected-battery": "󰂱  {device_alias}  {device_battery_percentage}%",
+        "format-disabled": "󰂲",
+        "tooltip-format-connected": "{device_enumerate}",
+        "on-click": "blueman-manager"
+    },
+    "backlight": {
+        "format": "{icon}  {percent}%",
+        "format-icons": [
+            "󰃞", "󰃟", "󰃠"
+        ],
+        "on-scroll-up": "brightnessctl set +5%",
+        "on-scroll-down": "brightnessctl set 5%-"
+    },
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "󰝟  Mute",
+        "format-icons": {
+            "default": [
+                "󰕿", "󰖀", "󰕾"
+            ]
+        },
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol",
+        "tooltip-format": "{desc}"
+    },
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": "󰂚<span foreground='#d08080'><sup></sup></span>",
+            "none": "󰂜",
+            "dnd-notification": "󰂛<span foreground='#d08080'><sup></sup></span>",
+            "dnd-none": "󰂛",
+            "inhibited-notification": "󰂚<span foreground='#d08080'><sup></sup></span>",
+            "inhibited-none": "󰂜",
+            "dnd-inhibited-notification": "󰂛<span foreground='#d08080'><sup></sup></span>",
+            "dnd-inhibited-none": "󰂛"
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "on-click-middle": "~/.config/swaync/scripts/cycle-monitor.sh",
+        "escape": true
+    },
+    "wlr/taskbar": {
+        "format": "{name}",
+        "icon-size": 14,
+        "on-click": "activate",
+        "on-click-middle": "close",
+        "tooltip-format": "{title}"
+    },
+    "tray": {
+        "icon-size": 15,
+        "spacing": 8
+    }
+}

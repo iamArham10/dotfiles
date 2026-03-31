@@ -1,0 +1,172 @@
+* {
+    font-family: "JetBrains Mono Nerd Font", "JetBrains Mono", "Noto Sans", monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(10, 10, 10, 0.85);
+    color: #b0b0b0;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+/* ── Workspaces ── */
+
+#workspaces {
+    margin-left: 4px;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    margin: 3px 2px;
+    color: #555555;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+#workspaces button.active {
+    color: #e0e0e0;
+    background: #2a2a2a;
+    box-shadow: inset 0 -2px 0 #e0e0e0;
+}
+
+#workspaces button:hover {
+    color: #909090;
+    background: #222222;
+}
+
+#workspaces button.urgent {
+    background: #3a2020;
+    color: #d08080;
+}
+
+/* ── Submap (resize mode) ── */
+
+#submap {
+    padding: 0 12px;
+    color: #d0a060;
+    font-style: italic;
+}
+
+/* ── Clock ── */
+
+#clock {
+    font-weight: 600;
+    color: #d0d0d0;
+    padding: 0 16px;
+    letter-spacing: 0.3px;
+}
+
+/* ── Right modules: shared style ── */
+
+#network,
+#bluetooth,
+#backlight,
+#pulseaudio,
+#battery,
+#custom-notification {
+    padding: 0 10px;
+    margin: 3px 3px;
+    border-radius: 6px;
+    color: #b0b0b0;
+    background: #1a1a1a;
+}
+
+/* ── State colors ── */
+
+#battery.charging {
+    color: #a0c880;
+}
+
+#battery.warning:not(.charging) {
+    color: #d0a060;
+}
+
+#battery.critical:not(.charging) {
+    color: #d08080;
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+#network.disconnected {
+    color: #555555;
+}
+
+#pulseaudio.muted {
+    color: #555555;
+}
+
+#bluetooth.disabled {
+    color: #555555;
+}
+
+/* ── Notifications (swaync) ── */
+
+#custom-notification {
+    color: #b0b0b0;
+}
+
+#custom-notification.notification-active {
+    color: #d0d0d0;
+}
+
+#custom-notification.dnd-notification,
+#custom-notification.dnd-none {
+    color: #555555;
+}
+
+/* ── Taskbar ── */
+
+#taskbar {
+    margin-left: 4px;
+}
+
+#taskbar button {
+    padding: 0 8px;
+    margin: 3px 2px;
+    color: #888888;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+#taskbar button.active {
+    color: #e0e0e0;
+    background: #2a2a2a;
+}
+
+#taskbar button:hover {
+    color: #b0b0b0;
+    background: #222222;
+}
+
+/* ── Tray ── */
+
+#tray {
+    padding: 0 8px;
+    margin-right: 4px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* ── Animations ── */
+
+@keyframes pulse {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.5;
+    }
+}

@@ -1,0 +1,185 @@
+* {
+  font-family: "JetBrains Mono Nerd Font", "JetBrains Mono", "Noto Sans", monospace;
+  font-weight: 500;
+}
+
+/* ── Control Center ── */
+
+.control-center {
+  background: #181818;
+  border: 1px solid #282828;
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.control-center .notification-row {
+  padding: 0;
+  margin: 0 0 6px 0;
+}
+
+/* ── Title ── */
+
+.widget-title {
+  color: #e0e0e0;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 6px 10px;
+}
+
+.widget-title > label {
+  color: #e0e0e0;
+  font-size: 14px;
+}
+
+.widget-title > button {
+  background: #282828;
+  color: #999999;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+.widget-title > button:hover {
+  background: #383838;
+  color: #ffffff;
+}
+
+/* ── DND Toggle ── */
+
+.widget-dnd {
+  color: #b0b0b0;
+  font-size: 13px;
+  margin: 6px 10px;
+}
+
+.widget-dnd > switch {
+  background: #282828;
+  border: 1px solid #333333;
+  border-radius: 14px;
+}
+
+.widget-dnd > switch:checked {
+  background: #5a7a9a;
+}
+
+.widget-dnd > switch slider {
+  background: #c0c0c0;
+  border-radius: 50%;
+}
+
+/* ── Notification Popups (floating) ── */
+
+.floating-notifications {
+  background: transparent;
+}
+
+.floating-notifications .notification {
+  background: #1c1c1c;
+  border: 1px solid #303030;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Notifications ── */
+
+.notification {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  margin: 5px 6px;
+  padding: 0;
+  transition: all 150ms ease;
+}
+
+.notification:hover {
+  border-color: #444444;
+}
+
+.notification-content {
+  padding: 14px 18px;
+}
+
+.notification .summary {
+  color: #f0f0f0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notification .time {
+  color: #606060;
+  font-size: 11px;
+}
+
+.notification .body {
+  color: #a8a8a8;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.notification .image {
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+/* ── Close button ── */
+
+.close-button {
+  background: #2a2a2a;
+  color: #666666;
+  border: none;
+  border-radius: 50%;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  margin: 6px;
+}
+
+.close-button:hover {
+  background: #c47070;
+  color: #181818;
+}
+
+/* ── Notification actions ── */
+
+.notification-action {
+  background: #252525;
+  color: #b0b0b0;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  margin: 6px 3px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.notification-action:hover {
+  background: #383838;
+  color: #f0f0f0;
+}
+
+/* ── Critical ── */
+
+.critical {
+  border-color: #c47070;
+}
+
+/* ── Inhibitors ── */
+
+.widget-inhibitors {
+  color: #b0b0b0;
+  font-size: 13px;
+  margin: 6px 10px;
+}
+
+.widget-inhibitors > button {
+  background: #282828;
+  color: #999999;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 6px 14px;
+}
+
+.widget-inhibitors > button:hover {
+  background: #383838;
+  color: #ffffff;
+}

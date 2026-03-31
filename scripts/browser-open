@@ -1,0 +1,3 @@
+#!/bin/bash
+# Browser opener for Zed authentication
+/usr/bin/google-chrome-stable "$@" &
