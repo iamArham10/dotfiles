@@ -1,48 +1,67 @@
-# Path to your Oh My Zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
 
-# Theme - robbyrussell is clean and fast, alternatives: agnoster, powerlevel10k
-ZSH_THEME="robbyrussell"
-
-# Uncomment for case-insensitive completion
-# CASE_SENSITIVE="true"
-
-# Hyphen-insensitive completion (_ and - are interchangeable)
-HYPHEN_INSENSITIVE="true"
-
-# Auto-update behavior
-zstyle ':omz:update' mode auto
-
-# Display red dots while waiting for completion
-COMPLETION_WAITING_DOTS="true"
 
 # ================================
-# PLUGINS
+# ZINIT BOOTSTRAP
 # ================================
-# Standard plugins: $ZSH/plugins/
-# Custom plugins: $ZSH_CUSTOM/plugins/
-plugins=(
-    git                      # Git aliases and functions
-    zsh-autosuggestions      # Fish-like autosuggestions
-    zsh-syntax-highlighting  # Syntax highlighting for commands
-    zsh-completions          # Additional completion definitions
-    fzf                      # Fuzzy finder integration
-    sudo                     # Press ESC twice to add sudo
-    copypath                 # Copy current path to clipboard
-    copyfile                 # Copy file contents to clipboard
-    web-search               # Search from terminal (google, ddg, etc.)
-    extract                  # Extract any archive with 'x' command
-    z                        # Jump to frequently used directories
-    command-not-found        # Suggest packages when command not found
-    colored-man-pages        # Colorized man pages
-    history                  # History command aliases
-    aliases                  # Alias management
-)
+if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing %F{33}Dharma Initiative%F{220} Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})...%f"
+    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
+    command git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.local/share/zinit/zinit.git" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f%b" || \
+        print -P "%F{160}▓▒░ %F{1}The clone has failed.%f%b"
+fi
 
-# Load completions
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+
+# ================================
+# THEME & OMZ LIBRARIES
+# ================================
+# Load OMZ core libraries needed for prompt info & theme
+zinit snippet OMZ::lib/git.zsh
+zinit snippet OMZ::lib/theme-and-appearance.zsh
+
+
+
+# ================================
+# PLUGINS LOADING
+# ================================
+# Fast-loaded plugins from Zsh-users
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+
+# Oh My Zsh plugins loaded as lightweight snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::fzf
+zinit snippet OMZP::sudo
+zinit snippet OMZP::copypath
+zinit snippet OMZP::copyfile
+zinit snippet OMZP::web-search
+zinit snippet OMZP::extract
+zinit snippet OMZP::command-not-found
+zinit snippet OMZP::colored-man-pages
+zinit snippet OMZP::history
+zinit snippet OMZP::aliases
+
+# Load shell completions after all plugins are loaded
 autoload -U compinit && compinit
 
-source $ZSH/oh-my-zsh.sh
+# ================================
+# COMPLETION MENU STYLING
+# ================================
+# Enable menu selection
+zstyle ':completion:*' menu select
+# Case-insensitive and hyphen-insensitive tab completion
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|[._-]=* r:|=*' 'l:|=*'
+# Group completions by category type
+zstyle ':completion:*' group-name ''
+# Custom colors and formatting for completion categories
+zstyle ':completion:*:descriptions' format '%F{33}── %d ──%f'
+zstyle ':completion:*:messages' format '%F{160}── %d ──%f'
+zstyle ':completion:*:warnings' format '%F{160}── no matches found ──%f'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # ================================
 # USER CONFIGURATION
@@ -82,7 +101,7 @@ bindkey '^[[3;5~' kill-word             # Ctrl+Delete - delete word forward
 # ================================
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-bindkey '^ ' autosuggest-accept         # Ctrl+Space to accept suggestion
+bindkey '^y' autosuggest-accept           # Ctrl+Y to accept suggestion (Ctrl+Space is tmux prefix)
 
 # ================================
 # FZF CONFIGURATION
@@ -93,6 +112,9 @@ export FZF_DEFAULT_OPTS='
   --border
   --info=inline
   --preview-window=right:50%:wrap
+  --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
+  --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+  --color=marker:#f5e0dc,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
 '
 # Use fd if available for better performance
 if command -v fd &> /dev/null; then
@@ -132,9 +154,8 @@ alias j='jobs -l'
 alias path='echo -e ${PATH//:/\\n}'
 
 # Editor
-alias v='nvim'
-alias vim='nvim'
-alias vi='nvim'
+alias v='vim'
+alias nvid='neovide . & disown'
 
 # Git shortcuts (in addition to oh-my-zsh git plugin)
 alias gs='git status'
@@ -156,7 +177,10 @@ alias top='btop'
 # Modern CLI replacements
 alias cat='bat --paging=never'
 alias catp='bat'  # cat with pager
-alias diff='delta'
+diff() {
+    # Use git's diff engine (works outside repos too) and let git's pager (delta) render it.
+    git diff --no-index -- "$@"
+}
 alias lg='lazygit'
 alias help='tldr'
 
@@ -164,6 +188,25 @@ alias help='tldr'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+
+# Tmux - start/attach a session for the current directory
+t() {
+    local name=$(basename "$PWD" | tr '. ' '_')
+    if [[ -n $TMUX ]]; then
+        if ! tmux has-session -t="$name" 2>/dev/null; then
+            tmux new-session -ds "$name" -c "$PWD"
+        fi
+        tmux switch-client -t "$name"
+    else
+        tmux new-session -A -s "$name" -c "$PWD"
+    fi
+}
+
+# Clear tmux resurrect saved sessions
+alias tc='echo "y" | rm -rf ~/.local/share/tmux/resurrect/* && echo "Resurrect saves cleared"'
+
+# Clear clipboard history and current clipboard
+alias clear-clipboard='cliphist wipe && wl-copy -c && notify-send "Clipboard Cleared"'
 
 # Quick edit configs
 alias zshrc='${EDITOR:-nvim} ~/.zshrc'
@@ -174,7 +217,7 @@ alias reload='source ~/.zshrc'
 # ================================
 
 # Create directory and cd into it
-mkcd() {
+mcd() {
     mkdir -p "$1" && cd "$1"
 }
 
@@ -257,6 +300,7 @@ eval "$(zoxide init zsh)"
 # z proj     → jumps to ~/projects (smart)
 # cd ./src   → normal cd with tab completion
 alias cdi='zi'    # Interactive directory selection with fzf
+alias zclear='rm -f "${_ZO_DATA_DIR:-$HOME/.local/share/zoxide}/db.zo" && echo "Zoxide database cleared"'
 
 # Mise - polyglot version manager (node, python, etc.)
 eval "$(mise activate zsh)"
@@ -309,5 +353,23 @@ eval "$(direnv hook zsh)"
 export PATH="$HOME/.cargo/bin:$PATH"
 export BROWSER="/usr/bin/google-chrome-stable"
 
+# # OpenCode: improve readability for light themes (code blocks)
+# if [[ -z "${OPENCODE_EXPERIMENTAL_MARKDOWN+x}" ]]; then
+#   export OPENCODE_EXPERIMENTAL_MARKDOWN=0
+# fi
+
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/arham/.local/bin:$PATH"
+
+# opencode
+export PATH=/home/arham/.opencode/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
+
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+# Initialize Starship prompt
+eval "$(starship init zsh)"
