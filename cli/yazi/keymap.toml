@@ -1,0 +1,87 @@
+ # Yazi Keymap Configuration
+ # See: https://yazi-rs.github.io/docs/configuration/keymap
+ 
+ # --- Existing custom bindings ---
+ [[mgr.prepend_keymap]]
+ on   = [ "T" ]
+ run  = 'shell "$SHELL" --block --confirm'
+ desc = "Open shell here"
+ 
+ [[mgr.prepend_keymap]]
+ on   = [ "C" ]
+ run  = '''shell 'for path in "$@"; do echo -n "$path" | wl-copy; done' --confirm'''
+ desc = "Copy file path to clipboard"
+ 
+ # --- Plugins ---
+ # Smart enter: one key to enter directories or open files
+ [[mgr.prepend_keymap]]
+ on  = "l"
+ run = "plugin smart-enter"
+ desc = "Enter directory or open file (smart)"
+
+# Explicit interactive open binding (Shift+O)
+[[mgr.prepend_keymap]]
+on  = "O"
+run = "open --interactive"
+desc = "Open file(s) with interactive chooser"
+ 
+ # Smart filter: powerful incremental filter / open-on-submit
+ [[mgr.prepend_keymap]]
+ on  = "F"
+ run = "plugin smart-filter"
+ desc = "Smart filter"
+ 
+ # Smart paste: paste into hovered dir, or current dir if on file
+ [[mgr.prepend_keymap]]
+ on  = "p"
+ run = "plugin smart-paste"
+ desc = "Paste into hovered directory or CWD"
+ 
+ # Toggle preview pane visibility (show/hide)
+ [[mgr.prepend_keymap]]
+ on  = "u"
+ run = "plugin toggle-pane min-preview"
+ desc = "Show or hide the preview pane"
+ 
+ # Toggle preview pane maximized / normal
+ [[mgr.prepend_keymap]]
+ on  = "U"
+ run = "plugin toggle-pane max-preview"
+ desc = "Maximize or restore the preview pane"
+
+# Toggle parent pane (left) visibility
+[[mgr.prepend_keymap]]
+on  = [ "g", "P" ]
+run = "plugin toggle-pane min-parent"
+desc = "Show or hide the parent pane"
+
+# Toggle parent pane maximized / normal
+[[mgr.prepend_keymap]]
+on  = [ "g", "R" ]
+run = "plugin toggle-pane max-parent"
+desc = "Maximize or restore the parent pane"
+
+# Toggle current pane (middle) visibility
+[[mgr.prepend_keymap]]
+on  = [ "g", "C" ]
+run = "plugin toggle-pane min-current"
+desc = "Show or hide the current pane"
+
+# Toggle current pane maximized / normal
+[[mgr.prepend_keymap]]
+on  = [ "g", "M" ]
+run = "plugin toggle-pane max-current"
+desc = "Maximize or restore the current pane"
+ 
+ # Zoom image in preview
+ [[mgr.prepend_keymap]]
+ on  = "+"
+ run = "plugin zoom 1"
+ desc = "Zoom in preview image"
+ 
+ # Zoom image out in preview
+ [[mgr.prepend_keymap]]
+ on  = "-"
+ run = "plugin zoom -1"
+ desc = "Zoom out preview image"
+ 
