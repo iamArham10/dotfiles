@@ -1,0 +1,196 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+    "rounded_selection": false,
+    "unnecessary_code_fade": 0.4,
+    "reduce_motion": "on",
+    "cursor_shape": "bar",
+    "buffer_font_family": ".ZedMono",
+    "agent_ui_font_size": 21.0,
+    "ui_font_weight": 400.0,
+    "mouse_wheel_zoom": true,
+    "cli_default_open_behavior": "existing_window",
+    "disable_ai": false,
+    "project_panel": {
+        "dock": "left",
+    },
+    "agent_buffer_font_size": 18.0,
+    "agent": {
+        "inline_assistant_model": {
+            "provider": "zed.dev",
+            "model": "gpt-5-mini",
+            "enable_thinking": false,
+        },
+        "auto_compact": {
+            "enabled": true,
+        },
+        "terminal_init_command": "",
+        "dock": "right",
+        "sandbox_permissions": {
+            "network_hosts": ["zed.dev"],
+        },
+        "tool_permissions": {
+            "tools": {
+                "fetch": { "default": "allow" },
+                "create_directory": { "default": "allow" },
+                "search_web": { "default": "allow" },
+                "terminal": { "default": "allow" },
+            },
+        },
+        "default_profile": "write",
+        "default_model": {
+            "effort": "medium",
+            "provider": "zed.dev",
+            "model": "gpt-5.6-terra",
+            "enable_thinking": true,
+        },
+        "favorite_models": [],
+        "model_parameters": [],
+    },
+    "icon_theme": {
+        "mode": "dark",
+        "light": "Zed (Default)",
+        "dark": "Zed (Default)",
+    },
+    "session": {
+        "trust_all_worktrees": true,
+    },
+
+    // ── Vim Mode ─────────────────────────────────────────────────────────
+    "vim_mode": true,
+    "vim": {
+        // Sync yanks with system clipboard (like NvChad default)
+        "use_system_clipboard": "always",
+        // Smart-case for f/t motions (like flash.nvim case-insensitive config)
+        "use_smartcase_find": true,
+        // Don't let f/t jump across lines (standard vim behavior)
+        "use_multiline_find": false,
+        // Auto-toggle relative numbers: relative in normal, absolute in insert
+        // (matches the autocmd that forces relative numbers)
+        "toggle_relative_line_numbers": true,
+        // Flash yank highlight for 200ms (matches TextYankPost autocmd)
+        "highlight_on_yank_duration": 200,
+    },
+
+    // ── Typography ───────────────────────────────────────────────────────
+    "ui_font_size": 20.0,
+    "buffer_font_size": 20.0,
+
+    // ── Theme (install "Ayu" from Extensions first) ──────────────────────
+    "theme": {
+        "mode": "dark",
+        "light": "macOS Classic Light",
+        "dark": "Carbonfox - opaque",
+    },
+
+    // ── Editor Settings (matching options.lua) ───────────────────────────
+    "relative_line_numbers": "wrapped",
+    "tab_size": 4,
+    "hard_tabs": false,
+    "vertical_scroll_margin": 8,
+    "horizontal_scroll_margin": 8,
+    "format_on_save": "on",
+    "show_wrap_guides": true,
+    "soft_wrap": "none",
+
+    // Cursor blink off — most vim users prefer a solid cursor
+    "cursor_blink": false,
+
+    // Show cursorline (autocmd shows it in active window)
+    "current_line_highlight": "all",
+
+    // Indent guides (matches indent-blankline.nvim)
+    "indent_guides": {
+        "enabled": true,
+        "coloring": "indent_aware",
+    },
+
+    // Scrollbar with git diff + search results
+    "scrollbar": {
+        "show": "auto",
+        "cursors": true,
+        "git_diff": true,
+        "search_results": true,
+        "diagnostics": "all",
+    },
+
+    // Inlay hints (matches ts_ls inlay hints config)
+    "inlay_hints": {
+        "enabled": false,
+        "show_type_hints": true,
+        "show_parameter_hints": false,
+        "show_other_hints": false,
+    },
+
+    // Word highlighting on hover (matches vim-illuminate)
+    "document_highlight": {
+        "enabled": true,
+    },
+
+    // Breadcrumbs (matches dropbar.nvim)
+    "breadcrumbs": true,
+
+    // Git gutter + inline blame (NvChad has gitsigns built in)
+    "git": {
+        "inline_blame": {
+            "enabled": true,
+            "delay_ms": 500,
+        },
+        "git_gutter": "tracked_files",
+    },
+
+    // Strip trailing whitespace on save (matches BufWritePre autocmd)
+    "remove_trailing_whitespace_on_save": true,
+
+    // Ensure final newline (common vim setting)
+    "ensure_final_newline_on_save": true,
+
+    // Tab bar (leader+bt toggles it; show by default)
+    "tab_bar": {
+        "show": true,
+    },
+
+    // Minimap off (not used in nvim)
+    "minimap": {
+        "enabled": false,
+    },
+
+    // Terminal panel
+    "terminal": {
+        "font_family": ".ZedMono",
+        "font_weight": 400.0,
+        "dock": "bottom",
+        "font_size": 15.0,
+        "working_directory": "current_project_directory",
+    },
+
+    // ── Language-specific overrides ──────────────────────────────────────
+    // (Matching conform.lua formatter settings)
+    "languages": {
+        "Python": {
+            "formatter": {
+                "external": {
+                    "command": "ruff",
+                    "arguments": ["format", "-"],
+                },
+            },
+        },
+        "Markdown": {
+            "remove_trailing_whitespace_on_save": false,
+        },
+        "TypeScript": {
+            "formatter": "prettier",
+            "wrap_guides": [100],
+            "colorize_brackets": true,
+        },
+        "JavaScript": {
+            "formatter": "prettier",
+        },
+    },
+}

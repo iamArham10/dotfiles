@@ -1,0 +1,307 @@
+[
+    //
+    // ── INSERT MODE ──────────────────────────────────────────────────────
+    //
+    {
+        "context": "Editor && vim_mode == insert",
+        "bindings": {
+            // jk → Escape (matches: map("i", "jk", "<ESC>"))
+            "j k": "vim::SwitchToNormalMode",
+        },
+    },
+
+    //
+    // ── NORMAL MODE (Leader = Space) ─────────────────────────────────────
+    //
+    {
+        "context": "Editor && vim_mode == normal && vim_operator == none && !VimWaiting",
+        "bindings": {
+            // ── Save / Format ───────────────────────────────────────────────
+            // <leader>w → Format + save (matches: conform.format then :w)
+            // NOTE: "workspace::FormatAndSave" is not a real Zed action — it
+            // silently did nothing. Use the same Sequence pattern as "space b w".
+            "space w": [
+                "action::Sequence",
+                ["editor::Format", "workspace::Save"],
+            ],
+            // <leader>W  → Save without formatting
+            "space shift-w": "workspace::Save",
+
+            // ── ; enters command mode (matches: map("n", ";", ":"))
+            ";": "command_palette::Toggle",
+
+            // ── File Explorer ───────────────────────────────────────────────
+            // <leader>e  → Toggle file tree (matches: NvimTreeToggle)
+            "space e": "project_panel::ToggleFocus",
+
+            // ── Buffer / Tab Navigation ─────────────────────────────────────
+            // <leader>bb → Find buffer (matches: Telescope buffers)
+            "space b b": "tab_switcher::Toggle",
+            // <leader>bd → Close current buffer (matches: close_buffer)
+            "space x": "pane::CloseActiveItem",
+            // <leader>bD → Close other buffers (matches: closeOtherBufs)
+            "space b shift-d": "pane::CloseOtherItems",
+            // <leader>ba → Close all buffers (matches: closeAllBufs)
+            "space b a": "pane::CloseAllItems",
+            // <leader>bx → Force close buffer
+            "space b x": "pane::CloseActiveItem",
+            // <leader>bw → Save and close buffer
+            "space b w": [
+                "action::Sequence",
+                ["workspace::Save", "pane::CloseActiveItem"],
+            ],
+            // <leader>bl → List buffers
+            "space b l": "tab_switcher::ToggleAll",
+            // <leader>bt → Toggle the tab/buffer line
+            "space b t": "editor::ToggleTabBar",
+            // <leader>bp → Previous buffer
+            "space b p": "pane::ActivatePreviousItem",
+            // <leader>bN → Next buffer
+            "space b shift-n": "pane::ActivateNextItem",
+
+            // Alt+, / Alt+. → Move the current buffer left / right
+            "alt-,": "pane::SwapItemLeft",
+            "alt-.": "pane::SwapItemRight",
+
+            // Shift-H / Shift-L → Prev/Next buffer (matches: <S-h>/<S-l>)
+            "shift-h": "pane::ActivatePreviousItem",
+            "shift-l": "pane::ActivateNextItem",
+
+            // <leader>1-9 → Go to buffer by number (matches: leader+number)
+            "space 1": ["pane::ActivateItem", 0],
+            "space 2": ["pane::ActivateItem", 1],
+            "space 3": ["pane::ActivateItem", 2],
+            "space 4": ["pane::ActivateItem", 3],
+            "space 5": ["pane::ActivateItem", 4],
+            "space 6": ["pane::ActivateItem", 5],
+            "space 7": ["pane::ActivateItem", 6],
+            "space 8": ["pane::ActivateItem", 7],
+            "space 9": ["pane::ActivateItem", 8],
+
+            // ── Split Windows ───────────────────────────────────────────────
+            // <leader>sv → Split vertically (matches: vsplit)
+            "space s v": "pane::SplitRight",
+            // <leader>sh → Split horizontally (matches: split)
+            "space s h": "pane::SplitDown",
+            // <leader>se → Give all splits equal size
+            "space s e": "workspace::ResetPaneSizes",
+            // <leader>sx → Close current split (closes its active item)
+            "space s x": "pane::CloseActiveItem",
+
+            // ── Tab Management ──────────────────────────────────────────────
+            // <leader>tn → New tab (no direct equivalent, opens file finder)
+            "space t n": "workspace::NewFile",
+            // <leader>tc → Close tab
+            "space t c": "pane::CloseActiveItem",
+            // <leader>to → Close all other tabs
+            "space t o": "pane::CloseOtherItems",
+
+            // ── Terminal ────────────────────────────────────────────────────
+            // <leader>tf → Toggle floating terminal (matches: ToggleTerm float)
+            "space t f": "terminal_panel::Toggle",
+            // <leader>th → Toggle horizontal terminal
+            "space t h": "terminal_panel::Toggle",
+            // <leader>tv → Toggle vertical terminal
+            "space t v": "terminal_panel::Toggle",
+            // <leader>tt → Open a brand-new terminal instance (vs. just toggling the dock)
+            "space t t": "workspace::NewTerminal",
+
+            // ── LSP Actions ─────────────────────────────────────────────────
+            // gR → Show references (matches: Telescope lsp_references)
+            "g shift-r": "editor::FindAllReferences",
+            // gD → Go to declaration (matches: vim.lsp.buf.declaration)
+            "g shift-d": "editor::GoToDeclaration",
+            // gd → Go to definition (matches: Telescope lsp_definitions)
+            "g d": "editor::GoToDefinition",
+            // gi → Go to implementation (matches: Telescope lsp_implementations)
+            "g i": "editor::GoToImplementation",
+            // gy → Go to type definition (matches: Telescope lsp_type_definitions)
+            "g y": "editor::GoToTypeDefinition",
+
+            // gp → Glance definitions (peek definition)
+            "g p": "editor::GoToDefinition",
+            // gP → Glance references
+            "g shift-p": "editor::FindAllReferences",
+            // gI → Glance implementations
+            "g shift-i": "editor::GoToImplementation",
+            // gT → Glance type definitions
+            "g shift-t": "editor::GoToTypeDefinition",
+
+            // <leader>ca → Code actions (matches: vim.lsp.buf.code_action)
+            "space c a": "editor::ToggleCodeActions",
+            // <leader>rn → Rename symbol (matches: vim.lsp.buf.rename)
+            "space r n": "editor::Rename",
+            // <leader>rs → Restart the current file's language server
+            "space r s": "editor::RestartLanguageServer",
+
+            // ── Diagnostics ─────────────────────────────────────────────────
+            // [d → Previous diagnostic
+            "[ d": "editor::GoToPreviousDiagnostic",
+            // ]d → Next diagnostic
+            "] d": "editor::GoToDiagnostic",
+            // <leader>dd → Show diagnostic at cursor (hover)
+            "space d d": "editor::Hover",
+            // <leader>dl → List all diagnostics (matches: Telescope diagnostics)
+            "space d l": "diagnostics::Deploy",
+            // <leader>xb → Buffer diagnostics (matches: Telescope diagnostics bufnr=0)
+            "space x b": "diagnostics::Deploy",
+
+            // ── Formatting ──────────────────────────────────────────────────
+            // <leader>mp → Format file (matches: conform.format)
+            "space m p": "editor::Format",
+
+            // ── Symbols ─────────────────────────────────────────────────────
+            // ]s / [s → Next / previous symbol in the file
+            "] s": "editor::GoToNextSymbol",
+            "[ s": "editor::GoToPreviousSymbol",
+
+            // ── Multiple cursors (no Neovim equivalent, but very handy) ─────
+            // <C-n> / <C-p> → Add cursor below / above, like the "add cursor" idiom
+            "ctrl-n": "editor::AddSelectionBelow",
+            "ctrl-p": "editor::AddSelectionAbove",
+
+            // ── Git (gitsigns-style hunk navigation & actions) ──────────────
+            // ]c / [c → Next / previous git hunk (matches gitsigns next_hunk/prev_hunk)
+            "] c": "editor::GoToHunk",
+            "[ c": "editor::GoToPreviousHunk",
+            // <leader>gh → Toggle inline hunk diff (matches gitsigns preview_hunk)
+            "space g h": "editor::ToggleHunkDiff",
+            // <leader>gb → Show blame for current line (matches gitsigns blame_line)
+            "space g b": "editor::BlameHover",
+            // <leader>gp → Push, <leader>gP → Pull
+            "space g p": "git::Push",
+            "space g shift-p": "git::Pull",
+
+            // ── Toggles & Utilities ─────────────────────────────────────────
+            // <leader>uw → Toggle word wrap (matches: set wrap!)
+            "space u w": "editor::ToggleSoftWrap",
+            // <leader>ui → Toggle inlay hints
+            "space u i": "editor::ToggleInlayHints",
+            // <leader>ub → Toggle git blame
+            "space u b": "editor::ToggleGitBlame",
+            // <leader>sa → Select all (matches: gg<S-v>G)
+            "space s a": "editor::SelectAll",
+            // <leader>o → Outline / document symbols (like Telescope lsp_document_symbols)
+            "space o": "outline::Toggle",
+            // <leader>Q  → Quit all (matches: qa!)
+            "space shift-q": "zed::Quit",
+
+            // ── File Path Utilities ─────────────────────────────────────────
+            // <leader>fy → Copy full file path (matches: setreg + expand %:p)
+            "space f y": "workspace::CopyPath",
+            // <leader>fn → Copy filename (closest Zed equivalent: relative path)
+            "space f n": "workspace::CopyRelativePath",
+
+            // ── Search (NvChad default: <leader>ff, <leader>fw, etc.) ──────
+            // <leader>ff → Find files
+            "space f f": "file_finder::Toggle",
+            // <leader>fw → Find word / live grep, project-wide (matches Telescope live_grep)
+            "space f w": "workspace::NewSearch",
+            // <leader>fb → Find buffers
+            "space f b": "tab_switcher::Toggle",
+            // <leader>fo → Find old files / recent projects
+            "space f o": "projects::OpenRecent",
+            // <leader>fh → Find help (command palette)
+            "space f h": "command_palette::Toggle",
+
+            // Zed has no UndoTree equivalent; normal-mode `u` remains undo.
+            // Zed has no native spell-checker (long-standing feature request,
+            // still unimplemented as of this writing) — there is no action to
+            // bind here, so the old "space u s" binding has been removed.
+        },
+    },
+
+    //
+    // ── VISUAL MODE ──────────────────────────────────────────────────────
+    //
+    {
+        "context": "Editor && vim_mode == visual && !VimWaiting",
+        "bindings": {
+            // <leader>ca → Code actions in visual mode
+            "space c a": "editor::ToggleCodeActions",
+            // <leader>mp → Format selection
+            "space m p": "editor::Format",
+            // Shift-S → Add surround in visual mode (matches NvChad vim-surround)
+            "shift-s": ["vim::PushAddSurrounds", {}],
+        },
+    },
+
+    //
+    // ── PANE NAVIGATION (works from editor, file tree, and terminal) ─────
+    // FIX: the old block only fired inside "Editor && vim_mode == normal",
+    // so ctrl-h/j/k/l did nothing while focus was in the Project Panel.
+    // This context list (taken from Zed's own defaults) covers every panel
+    // that should participate in cross-pane jumps.
+    //
+    {
+        "context": "ProjectPanel || Terminal || VimControl || EmptyPane || SharedScreen",
+        "bindings": {
+            "ctrl-h": "workspace::ActivatePaneLeft",
+            "ctrl-j": "workspace::ActivatePaneDown",
+            "ctrl-k": "workspace::ActivatePaneUp",
+            "ctrl-l": "workspace::ActivatePaneRight",
+        },
+    },
+
+    //
+    // ── PROJECT PANEL (file explorer) — NvimTree-style bindings ──────────
+    // This block didn't exist before, which is why "new file" had no
+    // keybinding. "not_editing" keeps these off while the inline
+    // rename/create text field is focused, so typing "a", "d", "r" etc.
+    // into a new filename works normally instead of re-triggering actions.
+    //
+    {
+        "context": "ProjectPanel && not_editing",
+        "bindings": {
+            // a → new file (matches NvimTree's `a`)
+            "a": "project_panel::NewFile",
+            // A / shift-a → new directory
+            "shift-a": "project_panel::NewDirectory",
+            // r → rename
+            "r": "project_panel::Rename",
+            // d → delete (moves to trash)
+            "d": "project_panel::Trash",
+            // shift-d → permanently delete
+            "shift-d": "project_panel::Delete",
+            // x → reveal in system file manager
+            "x": "project_panel::RevealInFileManager",
+            // c / p → copy / paste (matches NvimTree c/p)
+            "c": "project_panel::Copy",
+            "p": "project_panel::Paste",
+            // h / l → collapse / expand directory
+            "h": "project_panel::CollapseSelectedEntry",
+            "l": "project_panel::ExpandSelectedEntry",
+            // enter / o → open selected entry
+            "enter": "project_panel::OpenPermanent",
+            "o": "project_panel::OpenPermanent",
+            // / → search scoped to the selected directory (netrw-style)
+            "/": "project_panel::NewSearchInDirectory",
+            // ]c / [c → jump between git-changed entries in the tree
+            "] c": "project_panel::SelectNextGitEntry",
+            "[ c": "project_panel::SelectPrevGitEntry",
+        },
+    },
+
+    //
+    // ── WINDOW RESIZE (matches: <C-Up/Down/Left/Right>) ─────────────────
+    //
+    {
+        "context": "Editor && vim_mode == normal",
+        "bindings": {
+            "ctrl-up": "vim::ResizePaneUp",
+            "ctrl-down": "vim::ResizePaneDown",
+            "ctrl-left": "vim::ResizePaneLeft",
+            "ctrl-right": "vim::ResizePaneRight",
+        },
+    },
+
+    //
+    // ── GLOBAL SEARCH (matches NvChad <leader>fw → live grep) ───────────
+    //
+    {
+        "context": "Workspace",
+        "bindings": {
+            "ctrl-shift-f": "workspace::NewSearch",
+        },
+    },
+]
