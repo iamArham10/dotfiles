@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Toggle hypridle daemon off and on
+
+if pgrep -x "hypridle" >/dev/null; then
+    killall hypridle
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -t 2000 "Screen Idle" "Timeout disabled (screen will stay on)"
+    else
+        echo "Disabled automatic screen off"
+    fi
+else
+    # Start hypridle in the background, redirecting output
+    hypridle >/dev/null 2>&1 &
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -t 2000 "Screen Idle" "Timeout enabled (normal behavior)"
+    else
+        echo "Enabled automatic screen off"
+    fi
+fi

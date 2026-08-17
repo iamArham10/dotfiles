@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Popups often run with a minimal env: HOME may be unset (set -u would exit instantly).
+set -e
+set -o pipefail
+if [[ -z "${HOME:-}" ]]; then
+  HOME="$(getent passwd "$(id -un)" 2>/dev/null | cut -d: -f6)" || true
+fi
+if [[ -z "${HOME:-}" ]]; then
+  HOME="/home/$(id -un)"
+fi
+
+ROOT="${TMUX_SESSIONIZER_ROOT:-$HOME/Github}"
+
+list_dirs() {
+  if command -v fd &>/dev/null; then
+    fd --type d --absolute-path --max-depth 16 \
+      -E node_modules -E .git -E __pycache__ -E .venv -E venv \
+      -E dist -E target -E build -E .next -E .cache -E .turbo \
+      . "$ROOT" 2>/dev/null
+  else
+    find "$ROOT" -mindepth 1 -type d \
+      \( -name node_modules -o -name .git -o -name __pycache__ \
+         -o -name venv -o -name .venv -o -name dist -o -name target \
+         -o -name build -o -name .next \) -prune -o -type d -print 2>/dev/null
+  fi
+}
+
+if [[ $# -eq 1 ]]; then
+  selected=$1
+else
+  # pipefail can make the pipeline fail if fd/find errors; keep fzf interactive
+  set +o pipefail
+  selected=$(list_dirs | sort -u | fzf --reverse --prompt="Github project: " || true)
+  set -o pipefail
+fi
+
+if [[ -z "${selected:-}" ]]; then
+  exit 0
+fi
+
+rel="${selected#"$ROOT"/}"
+rel="${rel#/}"
+# Unique session name: path under Github (nested dirs included)
+session_name=$(printf '%s' "$rel" | tr '/ .-' '____' | tr -cd '[:alnum:]_')
+if [[ -z "$session_name" ]]; then
+  session_name=$(basename "$selected" | tr '. ' '_')
+fi
+# Avoid empty / too long names
+if [[ ${#session_name} -gt 64 ]]; then
+  session_name="${session_name:0:64}"
+fi
+
+tmux_running=$(pgrep -x tmux 2>/dev/null || true)
+
+if [[ -z "${TMUX:-}" ]] && [[ -z "$tmux_running" ]]; then
+  exec tmux new-session -s "$session_name" -c "$selected"
+fi
+
+if ! tmux has-session -t="$session_name" 2>/dev/null; then
+  tmux new-session -ds "$session_name" -c "$selected"
+fi
+
+tmux switch-client -t "$session_name"

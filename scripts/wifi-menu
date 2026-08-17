@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+
+THEME="$HOME/.config/rofi/wifi.rasi"
+NOTIFY="notify-send -a wifi-menu"
+
+get_signal_icon() {
+    local signal=$1
+    if   (( signal >= 75 )); then echo "󰤨"
+    elif (( signal >= 50 )); then echo "󰤥"
+    elif (( signal >= 25 )); then echo "󰤢"
+    else echo "󰤟"
+    fi
+}
+
+current_connection() {
+    nmcli -t -f NAME,TYPE connection show --active | grep wireless | cut -d: -f1
+}
+
+scan_networks() {
+    nmcli -f SSID,SIGNAL,SECURITY device wifi rescan 2>/dev/null
+    sleep 0.5
+    nmcli -t -f SSID,SIGNAL,SECURITY device wifi list | \
+        grep -v '^$' | \
+        sort -t: -k2 -rn | \
+        awk -F: '!seen[$1]++ && $1!=""'
+}
+
+toggle_wifi() {
+    local status
+    status=$(nmcli radio wifi)
+    if [[ "$status" == "enabled" ]]; then
+        nmcli radio wifi off
+        $NOTIFY "Wi-Fi" "Disabled"
+    else
+        nmcli radio wifi on
+        $NOTIFY "Wi-Fi" "Enabled"
+    fi
+}
+
+disconnect_wifi() {
+    local active
+    active=$(current_connection)
+    if [[ -n "$active" ]]; then
+        nmcli connection down "$active"
+        $NOTIFY "Wi-Fi" "Disconnected from $active"
+    fi
+}
+
+connect_to_network() {
+    local ssid="$1"
+    local security="$2"
+
+    if nmcli -t -f NAME connection show | grep -qx "$ssid"; then
+        nmcli connection up "$ssid" && \
+            $NOTIFY "Wi-Fi" "Connected to $ssid" || \
+            $NOTIFY "Wi-Fi" "Failed to connect to $ssid"
+        return
+    fi
+
+    if [[ -n "$security" && "$security" != "--" ]]; then
+        local pass
+        pass=$(rofi -theme "$THEME" -dmenu -p "Password" -password -mesg "Enter password for <b>$ssid</b>")
+        [[ -z "$pass" ]] && return
+        nmcli device wifi connect "$ssid" password "$pass" && \
+            $NOTIFY "Wi-Fi" "Connected to $ssid" || \
+            $NOTIFY "Wi-Fi" "Failed to connect to $ssid"
+    else
+        nmcli device wifi connect "$ssid" && \
+            $NOTIFY "Wi-Fi" "Connected to $ssid" || \
+            $NOTIFY "Wi-Fi" "Failed to connect to $ssid"
+    fi
+}
+
+main() {
+    local wifi_status
+    wifi_status=$(nmcli radio wifi)
+
+    if [[ "$wifi_status" == "disabled" ]]; then
+        local choice
+        choice=$(echo -e "󰤮  Enable Wi-Fi" | rofi -theme "$THEME" -dmenu -p "Wi-Fi Off")
+        [[ "$choice" == *"Enable"* ]] && toggle_wifi
+        return
+    fi
+
+    local active
+    active=$(current_connection)
+
+    local entries=""
+
+    if [[ -n "$active" ]]; then
+        entries+="󰤨  Connected: $active\n"
+        entries+="󰤭  Disconnect\n"
+    fi
+    entries+="󰤮  Toggle Wi-Fi\n"
+    entries+="───────────────\n"
+
+    while IFS=: read -r ssid signal security; do
+        [[ -z "$ssid" ]] && continue
+        local icon
+        icon=$(get_signal_icon "$signal")
+        local lock=""
+        [[ -n "$security" && "$security" != "--" ]] && lock="󰌾 "
+        if [[ "$ssid" == "$active" ]]; then
+            continue
+        fi
+        entries+="$icon  $lock$ssid\n"
+    done < <(scan_networks)
+
+    local chosen
+    chosen=$(echo -e "$entries" | rofi -theme "$THEME" -dmenu -p "Wi-Fi" -selected-row 0)
+    [[ -z "$chosen" ]] && return
+
+    case "$chosen" in
+        *"Disconnect"*)   disconnect_wifi ;;
+        *"Toggle Wi-Fi"*) toggle_wifi ;;
+        "───────────────") return ;;
+        *"Connected:"*)   return ;;
+        *)
+            local ssid security_info
+            ssid=$(echo "$chosen" | sed 's/^[^ ]* *//;s/^󰌾 //')
+            security_info=$(nmcli -t -f SSID,SECURITY device wifi list | grep "^${ssid}:" | head -1 | cut -d: -f2)
+            connect_to_network "$ssid" "$security_info"
+            ;;
+    esac
+}
+
+main

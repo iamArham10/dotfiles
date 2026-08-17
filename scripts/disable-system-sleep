@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SRC="${HOME}/.local/etc/systemd/sleep.conf.d/disable-sleep.conf"
+DST="/etc/systemd/sleep.conf.d/disable-sleep.conf"
+[[ -f "$SRC" ]] || { echo "Missing: $SRC" >&2; exit 1; }
+sudo install -D -m 644 "$SRC" "$DST"
+echo "Installed $DST (suspend/hibernate disabled)."

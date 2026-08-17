@@ -1,0 +1,19 @@
+#!/bin/sh
+# Toggles cursor size between normal and large for focused reading.
+# Reads the actual current size from gsettings to stay in sync.
+
+NORMAL_SIZE=32
+BIG_SIZE=128
+THEME="Adwaita"
+
+CURRENT=$(gsettings get org.gnome.desktop.interface cursor-size 2>/dev/null)
+
+if [ "$CURRENT" = "$BIG_SIZE" ]; then
+    gsettings set org.gnome.desktop.interface cursor-size "$NORMAL_SIZE"
+    swaymsg seat seat0 xcursor_theme "$THEME" "$NORMAL_SIZE" >/dev/null 2>&1
+    notify-send -t 1500 "Cursor" "Normal size"
+else
+    gsettings set org.gnome.desktop.interface cursor-size "$BIG_SIZE"
+    swaymsg seat seat0 xcursor_theme "$THEME" "$BIG_SIZE" >/dev/null 2>&1
+    notify-send -t 1500 "Cursor" "Large size (reading mode)"
+fi

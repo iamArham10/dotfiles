@@ -1,14 +1,14 @@
 {
     "layer": "top",
-    "position": "top",
+    "position": "bottom",
     "height": 28,
     "margin-top": 0,
     "margin-left": 0,
     "margin-right": 0,
     "spacing": 0,
     "modules-left": [
-        "sway/workspaces",
-        "sway/mode",
+        "hyprland/workspaces",
+        "hyprland/submap",
         "wlr/taskbar"
     ],
     "modules-center": [
@@ -23,12 +23,12 @@
         "custom/notification",
         "tray"
     ],
-    "sway/workspaces": {
+    "hyprland/workspaces": {
         "disable-scroll": true,
         "all-outputs": false,
         "format": "{name}"
     },
-    "sway/mode": {
+    "hyprland/submap": {
         "format": "  {}"
     },
     "clock": {
@@ -41,50 +41,68 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon}  {capacity}%",
-        "format-charging": "󰂄  {capacity}%",
-        "format-full": "󰁹  Full",
+        "format": "{icon}",
+        "format-warning": "{icon}  {capacity}%",
+        "format-critical": "{icon}  {capacity}%",
+        "format-charging": "󰂄",
+        "format-full": "󰁹",
         "format-icons": [
-            "󰁺", "󰁼", "󰁾", "󰂀", "󰁹"
+            "󰁺",
+            "󰁼",
+            "󰁾",
+            "󰂀",
+            "󰁹"
         ],
-        "tooltip-format": "{timeTo}\n{power:.1f}W"
+        "tooltip-format": "{capacity}%  {timeTo}\n{power:.1f}W"
     },
     "network": {
-        "format-wifi": "{icon}  {essid}",
-        "format-ethernet": "󰈀  Wired",
-        "format-disconnected": "󰤭  Off",
-        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
-        "tooltip-format-wifi": "{signalStrength}% | {ipaddr}",
+        "format-wifi": "{icon}",
+        "format-ethernet": "󰈀",
+        "format-disconnected": "󰤭",
+        "format-icons": [
+            "󰤯",
+            "󰤟",
+            "󰤢",
+            "󰤥",
+            "󰤨"
+        ],
+        "tooltip-format-wifi": "{essid}  {signalStrength}% | {ipaddr}",
         "tooltip-format-ethernet": "{ipaddr}",
         "on-click": "wifi-menu"
     },
     "bluetooth": {
         "format": "󰂯",
-        "format-connected": "󰂱  {device_alias}",
-        "format-connected-battery": "󰂱  {device_alias}  {device_battery_percentage}%",
+        "format-connected": "󰂱",
+        "format-connected-battery": "󰂱",
         "format-disabled": "󰂲",
-        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format": "Bluetooth",
+        "tooltip-format-connected": "{device_alias}  {device_battery_percentage}%",
         "on-click": "blueman-manager"
     },
     "backlight": {
-        "format": "{icon}  {percent}%",
+        "format": "{icon}",
         "format-icons": [
-            "󰃞", "󰃟", "󰃠"
+            "󰃞",
+            "󰃟",
+            "󰃠"
         ],
+        "tooltip-format": "Brightness {percent}%",
         "on-scroll-up": "brightnessctl set +5%",
         "on-scroll-down": "brightnessctl set 5%-"
     },
     "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "format-muted": "󰝟  Mute",
+        "format": "{icon}",
+        "format-muted": "󰝟",
         "format-icons": {
             "default": [
-                "󰕿", "󰖀", "󰕾"
+                "󰕿",
+                "󰖀",
+                "󰕾"
             ]
         },
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-click-right": "pavucontrol",
-        "tooltip-format": "{desc}"
+        "tooltip-format": "Volume {volume}%\n{desc}"
     },
     "custom/notification": {
         "tooltip": false,
